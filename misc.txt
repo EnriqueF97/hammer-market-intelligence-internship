@@ -1,0 +1,18 @@
+HuggingFace token:
+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
+
+
+List of news sources with more weight
+BBC
+NOS - news in dutch, need to translate, hard to find economy news relevant for the experiments
+The NY Times - Requires subscription for a lot of articles, news not world wide enough
+
+
+Sources for historical trade balances, by country, by product,
+
+trademap.org
+
+comtradeplus.un.org
+
+fao.org
+

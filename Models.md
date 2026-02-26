@@ -82,3 +82,16 @@ Justification
 Why these numbers, justify key parts of the news that define your scores.
 Up to date data that aids this decision.
 ```
+
+
+## Trade visualizators
+
+
+- **[Trademap](trademap.org)**
+    - Uses the information from comtradeplus.un.org
+
+- **[Comtradeplus (UN page)](comtradeplus.un.org)**
+    - More raw information that could be difficult to visualize, powerful
+
+- **[FAOStat](fao.org)**
+    - Production values mainly
