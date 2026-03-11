@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Data — never commit raw or processed data
+01_data/raw/
+01_data/processed/
+01_data/features/
+
+# Environments
+.venv/
