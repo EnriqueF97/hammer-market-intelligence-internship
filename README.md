@@ -21,30 +21,37 @@ This thesis investigates how news-driven information affects liquidity dynamics 
 
 ```text
 project_wti/
-├── 01_data/                    # Data directory
+├── 01_data/                        # Data directory
 │   ├── raw/
-│   │   ├── price/              # Raw OHLCV data from yfinance (CL=F)
-│   │   ├── news/               # Raw news text (GDELT, EIA reports)
-│   │   └── macro/              # EIA inventories, FRED exchange rates
-│   ├── processed/              # Cleaned and aligned data
-│   └── features/               # Model-ready feature datasets
+│   │   ├── price/                  # Raw OHLCV data from yfinance (CL=F)
+│   │   ├── news/                   # Raw news text (GDELT, EIA reports)
+│   │   └── macro/                  # EIA inventories, FRED exchange rates
+│   ├── processed/                  # Cleaned and aligned data
+│   └── features/                   # Model-ready feature datasets
 │
-├── 02_notebooks/               # Exploration and prototyping notebooks
+├── 02_notebooks/                   # Exploration and prototyping notebooks
+│   ├── 01_yfinances_prices.ipynb   # Import OHLCV data from yfinance
+│   ├── 02_eia_inventories.ipynb    # Import inventory reports from EIA
+│   ├── 03_gdelt_headlines.ipynb    # Get oil related news headers and source
+│   ├── 04_gdelt_scrapper.ipynb     # Crawl, process, filter and store news content
+│   ├── 05_alignment.ipynb          # Align news with nearest inventory report
+│   ├── 06_finbert_sentiment.ipynb  # Financial score on news content
+│   ├── 07_headline_bias.ipynb      # Comparison between title and title + body
 │
 ├── 03_src/
-│   ├── acquisition/            # Data acquisition scripts
-│   ├── features/               # Feature engineering
-│   ├── models/                 # Model implementations (baseline, RQ1, RQ2)
-│   ├── nlp/                    # NLP pipeline (FinBERT, preprocessing)
-│   └── config/                 # Experiment configuration files
+│   ├── acquisition/                # Data acquisition scripts
+│   ├── features/                   # Feature engineering
+│   ├── models/                     # Model implementations (baseline, RQ1, RQ2)
+│   ├── nlp/                        # NLP pipeline (FinBERT, preprocessing)
+│   └── config/                     # Experiment configuration files
 │
 ├── 04_outputs/
-│   ├── figures/                # Generated plots
-│   ├── tables/                 # Result tables
-│   ├── models/                 # Saved trained models
-│   └── experiment_tracking/    # Weights & Biases logs
+│   ├── figures/                    # Generated plots
+│   ├── tables/                     # Result tables
+│   ├── models/                     # Saved trained models
+│   └── experiment_tracking/        # Weights & Biases logs
 │
-└── 05_reports/                 # Monthly progress reports and thesis draft
+└── 05_reports/                     # Monthly progress reports and thesis draft
 ```
 
 ---
