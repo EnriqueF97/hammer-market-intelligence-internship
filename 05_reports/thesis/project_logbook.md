@@ -162,3 +162,104 @@
 - Bid-ask spread unavailable from yfinance — using volume + Amihud as proxies
 - Original proposal mentioned Hammer proprietary data — using public sources instead (needs discussion with Dr. Batina)
 - ARIMA in original proposal superseded by lag OLS + event study approach
+
+---
+
+## Phase 4 — Planned (Next)
+
+### Core architecture shift
+- Moving from lag OLS + abandoned VAR → **Temporal Fusion Transformer (TFT)**
+- Attention weights replace regression coefficients as evidence for RQ1 and RQ2
+- Richer input features replace FinBERT binary labels
+
+### Why TFT over lag OLS for RQ1 and RQ2
+- **RQ2:** lag OLS gives 7 discrete coefficient points — TFT gives continuous attention distribution over all hours simultaneously
+- **RQ1:** lag OLS has one coefficient per sentiment direction — TFT captures nonlinear interactions (e.g. bearish + high VIX + strong dollar = disproportionate volume spike)
+- Attention weights are direct interpretable evidence, not inferred from coefficients
+
+### LLM feature extraction — replacing FinBERT labels
+- GPT-4o-mini or Claude Haiku API (~$1-2 for all 13,690 articles)
+- Per article, extract structured JSON:
+  - `sentiment_score` — continuous −1 to +1 (vs FinBERT's 3-class label)
+  - `magnitude` — event importance 0 to 1
+  - `event_type` — geopolitical / supply / demand / macro / inventory / technical
+  - `entities` — OPEC, Russia, Fed, Iran, Saudi Arabia, etc.
+  - `certainty` — 0 to 1 (speculative vs confirmed)
+  - `price_direction` — bearish / bullish / neutral
+  - `time_horizon` — immediate / short_term / long_term
+- New notebook: `09_llm_features.ipynb`
+- Prompt design is critical — test on 10 articles before full batch
+
+### Additional parallel market variables
+- **DXY (US Dollar Index)** — WTI priced in USD, strong inverse correlation, available via yfinance
+- **VIX** — market volatility / risk-off signal, available via yfinance
+- **Cushing Oklahoma inventory** — physical WTI delivery hub, more granular than national EIA, available via EIA API
+- **OPEC+ events** — meeting dates and production decisions, structured event flags
+- **Seasonality** — hour of day, day of week, month — computed from timestamp, no external source needed
+- New notebook: `10_parallel_features.ipynb`
+
+### Why these parallel variables matter
+- DXY and VIX are what professional WTI traders monitor in real time
+- Same bearish news has different impact depending on macro context — TFT can learn this
+- Without these, the model sees sentiment in a vacuum; with them it sees sentiment in context
+
+### Execution plan
+- **Week 1-2:** LLM feature extraction (09)
+- **Week 3:** Download + align parallel market variables (10)
+- **Week 4:** Event study for RQ1 — fast, clean, complements lag OLS
+- **Week 5-6:** TFT implementation with pytorch-forecasting
+- **Week 7:** Analysis — attention weights, asymmetry, TFT vs lag OLS comparison
+- **Week 8:** Thesis writing
+
+---
+
+## Results of phase 4 so far (11 may)
+
+## Phase 4 — TFT Implementation and Results
+
+### Architecture and training
+- Replaced VAR with Temporal Fusion Transformer (TFT) via pytorch-forecasting 1.7.0
+- Training done on Google Colab T4 GPU — M1 MPS had compatibility issues with pytorch-forecasting
+- Model: hidden_size=32, attention_head_size=4, dropout=0.1, 112k parameters
+- Early stopping triggered at epoch 21, best val_loss=0.204
+- Checkpoint saved locally at `01_data/models/tft_wti.ckpt`
+
+### Input features
+- **LLM features (Claude Haiku):** sentiment_score, magnitude, event_type, certainty, price_direction, time_horizon
+- **Market context:** log_volume, price_range, log_return, amihud, DXY, VIX
+- **Temporal covariates:** hour, day_of_week, month, is_wednesday, is_us_session
+- 10,797 hourly rows, 48h encoder window, 1h prediction horizon
+- Train/val split: 80/20, ~8,637 training hours, ~2,160 validation hours
+
+### RQ2 — Lag structure (attention weights)
+- Peak attention at **-4h** — the model pays most attention to conditions 4 hours ago
+- Consistent with lag OLS peak at lag+6 — both identify the 4-6 hour window as most informative
+- Two distinct attention clusters identified:
+  - **Short-term:** -2h to -5h — immediate news absorption window
+  - **Daily memory:** -27h to -28h — same time yesterday, captures daily market cycles
+- TFT adds insight over lag OLS: daily memory effect was invisible in the 12h OLS window
+
+### RQ1 — Asymmetry (feature importance + directional analysis)
+- **sentiment_score importance = 53%** — single most important feature by large margin
+- Confirms LLM continuous scoring outperforms FinBERT binary labels
+- Top features: sentiment_score (0.53) > log_volume (0.09) > DXY (0.08) > log_return (0.06)
+- VIX importance = 0.005 — negligible, DXY already captures risk signal for WTI
+- **Directional asymmetry:**
+  - Bearish predicted volume: 8.775
+  - Bullish predicted volume: 8.700
+  - Bearish > Bullish confirmed, consistent with lag OLS and EIA baseline
+  - T-test p=0.56 — not statistically significant (underpowered: only 156/144 validation hours)
+- **Asymmetry conclusion:** direction consistent across all models but TFT underpowered for significance test; lag OLS (p<0.001) is the stronger evidence for RQ1
+
+### Key methodological findings
+- LLM feature extraction (Haiku) produces dramatically richer sentiment signal than FinBERT
+- event_type ranks above magnitude — category of news more informative than size
+- Neutral news hours have highest predicted volume (8.875) — uncertainty drives trading
+- TFT best used for RQ2 (attention weights) and feature importance; lag OLS better for RQ1 significance
+
+### Where to resume
+- Write up combined RQ1 and RQ2 answers using all evidence:
+  - RQ1: EIA baseline (p=0.030) + lag OLS (p<0.001) + TFT feature importance (53%) + TFT directional (bearish > bullish)
+  - RQ2: lag OLS peak at +6h + TFT attention peak at -4h + daily memory at -27/-28h
+- Optional: run event study for cleaner RQ1 visual
+- Thesis writing — logbook has all material condensed

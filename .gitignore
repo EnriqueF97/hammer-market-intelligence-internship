@@ -17,3 +17,6 @@ __pycache__/
 
 # Environment variables
 .env
+
+04_outputs/.DS_Store
+05_reports/.DS_Store
