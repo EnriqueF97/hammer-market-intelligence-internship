@@ -1,6 +1,6 @@
 # Project Logbook — Modeling News-Driven Liquidity Dynamics in Commodities Markets
 
-**Student:** Enrique Favila Martínez | **Institution:** Radboud University MSc AI | **Host:** Hammer Market Intelligence | **Supervisor:** Dr. Lejla Batina | **Last updated:** April 2026
+**Student:** Enrique Favila Martínez | **Institution:** Radboud University MSc AI | **Host:** Hammer Market Intelligence | **Supervisor:** Dr. Lejla Batina | **Last updated:** May 2026
 
 ---
 
@@ -361,3 +361,38 @@ We are keeping the current TFT model with pre-war news, current val loss = 0.209
 - Run nb06 (LLM feature extraction) for the ~10,771 articles without features
 - Re-run nb05 after LLM extraction to refresh `liquidity` with new feature coverage
 - Re-train TFT on Colab with expanded dataset (~22k aligned rows vs ~10k before)
+
+---
+
+## Phase 5 — LLM Extraction v2: Infrastructure and Calibration Setup (14 May 2026)
+
+### Archival
+- `02_notebooks/06_finbert_sentiment.ipynb` → `02_notebooks/old_stuff/06_finbert_sentiment.ipynb`
+- `02_notebooks/06_llm_features.ipynb` → `02_notebooks/old_stuff/06_llm_features_v1.ipynb`
+- Both preserved as reference for thesis methodology comparison (FinBERT vs LLM)
+
+### Shared extraction module — `03_src/nlp/llm_features.py`
+- `SYSTEM_PROMPT`: system-level instruction with inline event_type categories
+- `EXTRACTION_TOOL`: Anthropic tool schema enforcing types and enums at the API level
+- `extract_features(title, body, client) -> dict`: single-article extraction function
+- **Schema changes from v1:**
+  - `price_direction` removed (derivable from `sentiment_score` via thresholding)
+  - `event_type` is now an array of 1–3 ordered categories (was single string); `"inventory"` dropped
+  - `time_horizon` values: `immediate / short_term / structural` (was `long_term`)
+  - `usable` (boolean) added as the only required field — short-circuits all other fields when false
+  - Body truncated at 1500 chars (was 800)
+- Tool-use API with `tool_choice` forcing `extract_article_features` — no JSON parsing
+- Prompt caching on system prompt (`cache_control: ephemeral`)
+- Model: `claude-haiku-4-5`, `max_tokens=400`
+
+### Calibration infrastructure
+- `02_notebooks/11_calibration.ipynb`: one-shot validation notebook over `calibration_sample` (30 articles)
+  - Reads from DB, calls `extract_features` synchronously, saves to JSON — does NOT write to `llm_features`
+  - Output: `05_reports/calibration/llm_calibration.json`
+  - Estimated cost: ~$0.03
+- `02_notebooks/06_llm_features.ipynb`: placeholder, pending calibration approval
+
+### Next steps
+- Run `11_calibration.ipynb` and review output JSON against hand-scored values
+- Approve prompt → populate `06_llm_features.ipynb` for production batch (~20k articles)
+- Run nb04 final pass (2,749 articles still pending body scrape)
