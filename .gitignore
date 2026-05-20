@@ -23,3 +23,12 @@ __pycache__/
 
 04_outputs/.DS_Store
 05_reports/.DS_Store
+
+# LaTeX
+*.aux
+*.log
+*.toc
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk

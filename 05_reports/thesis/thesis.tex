@@ -1,0 +1,87 @@
+\documentclass[12pt, a4paper]{report}
+
+% Encoding
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Page layout
+\usepackage[margin=2.5cm]{geometry}
+
+% Typography
+\usepackage{microtype}         % better text justification
+\usepackage{parskip}           % space between paragraphs instead of indent
+\usepackage{setspace}          % line spacing control
+\onehalfspacing
+
+% Font: Latin Modern (Overleaf default feel)
+\usepackage{lmodern}
+
+% Colors
+\usepackage[dvipsnames]{xcolor}
+
+% Headers and footers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Chapter title styling
+\usepackage{titlesec}
+\titleformat{\chapter}[hang]
+  {\normalfont\huge\bfseries}{\thechapter.}{1em}{}
+\titlespacing*{\chapter}{0pt}{20pt}{20pt}
+
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=MidnightBlue,
+  citecolor=MidnightBlue,
+  urlcolor=MidnightBlue
+}
+
+% Tables
+\usepackage{booktabs}
+
+% Figures
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\captionsetup{font=small, labelfont=bf}
+
+% Math
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Code listings
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!10}
+}
+
+% Bibliography
+\usepackage{natbib}
+
+% Misc
+
+% ─── Document ──────────────────────────────────────────────────────────────────
+
+\title{\textbf{Modeling News-Driven Liquidity Dynamics and Information
+Propagation in Commodities Markets}}
+\author{Enrique Favila Martinez}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\chapter{Introduction}
+Your text here.
+
+\end{document}
