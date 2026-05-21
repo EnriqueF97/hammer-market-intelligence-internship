@@ -471,6 +471,7 @@ We are keeping the current TFT model with pre-war news, current val loss = 0.209
 ## Phase 5 — Full LLM extraction batch (2026-05-18)
 
 ### Batch details
+
 - Batch ID: `msgbatch_018JvAUYvymcoVVakpqA3f1T`
 - Model: `claude-haiku-4-5`, Batches API (50% discount), prompt caching on system prompt
 - SQL filter: `body IS NOT NULL AND body NOT LIKE 'ERROR%'` — no body_valid filter
@@ -479,18 +480,21 @@ We are keeping the current TFT model with pre-war news, current val loss = 0.209
 - Errors: 0 (logged to `05_reports/calibration/batch_errors.json`)
 
 ### Results written to llm_features
+
 - Total rows: 19,619
 - usable=true: 11,675
 - usable=false: 7,944
 
 ### Channel stats (usable articles)
+
 - sentiment_score: mean=0.025, std=0.501
-- supply_impact:   mean=-0.071, std=0.463
-- demand_impact:   mean=-0.075, std=0.34
-- risk_premium:    mean=0.156, std=0.426
+- supply_impact: mean=-0.071, std=0.463
+- demand_impact: mean=-0.075, std=0.34
+- risk_premium: mean=0.156, std=0.426
 - All channels = 0.0: 1,161 articles
 
 ### Actual cost
+
 - Input tokens: 270,880
 - Output tokens: 20,888
 - Cache reads: 0 (hit rate: 0.0%)
@@ -498,6 +502,7 @@ We are keeping the current TFT model with pre-war news, current val loss = 0.209
 - **Actual total: $0.1501**
 
 ### Next steps
+
 - Inspect batch_errors.json; resubmit failed articles if meaningful in volume
 - Run nb05 (alignment) to refresh liquidity table with new usable-filtered feature coverage
 - Re-train TFT on Colab with expanded dataset
@@ -509,6 +514,7 @@ We are keeping the current TFT model with pre-war news, current val loss = 0.209
 ### Alignment rewrite — CSV → SQLite
 
 **Changes:**
+
 - All reads now come from `wti_thesis.db` (articles, market_context, llm_features) — no CSV reads
 - Replaced slow `apply(get_next_trading_hour)` loop with vectorized `merge_asof(direction='forward')`
 - Inner join articles → market_context: articles beyond coverage are dropped and counted
@@ -518,6 +524,7 @@ We are keeping the current TFT model with pre-war news, current val loss = 0.209
 - `DROP TABLE IF EXISTS liquidity` before write — no stale rows
 
 **Results after rewrite:**
+
 - Total articles in DB: 22,795
 - Aligned to market_context: 22,795
 - Dropped (out of range): 0
@@ -525,3 +532,7 @@ We are keeping the current TFT model with pre-war news, current val loss = 0.209
 - Forward-assigned (>=2h): 7,505
 - With LLM features: 19,619
 - Without LLM features: 3,176
+
+**TODO before TFT v2 training: notebook 05 currently does not propagate DXY and VIX from market_context to liquidity. Add these columns to the alignment step before training, or the TFT v2 macro covariates will be empty.**
+
+**TODO PIPELINE to create the entities list for the dataset, rightnow there are different ways of naming a single entity**
