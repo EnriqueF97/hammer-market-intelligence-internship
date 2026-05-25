@@ -1,3 +1,5 @@
+# 3 - Methods
+
 ## 3.1 Data sources and acquisition
 
 This thesis combines three distinct data sources into a unified hourly dataset for WTI crude oil: market data on prices and trading activity, structured macroeconomic indicators, and unstructured news content. Each source has its own native cadence and access pattern, and harmonising them onto a common time grid is a central methodological concern, addressed in Section 3.2.
