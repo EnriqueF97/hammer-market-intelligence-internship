@@ -11,7 +11,7 @@
 
 This file is the proposal writting and structure reference for the thesis.
 
-## Chapter 1 — Introduction
+## Chapter 1 - Introduction
 
 **Purpose:** What is the problem, current research questions, contributions.
 
@@ -31,9 +31,7 @@ This file is the proposal writting and structure reference for the thesis.
   - (c) Comparative finding on news content representation: title-only and full-body sentiment extraction disagree on 41.6% of articles, with systematic asymmetry. Supported by 4.2.2.
 - 1.5 Structure of the thesis
 
----
-
-## Chapter 2 — Background
+## Chapter 2 - Background
 
 **Purpose:** Describe everything needed to follow Chapters 3 and 4.
 
@@ -48,7 +46,7 @@ This file is the proposal writting and structure reference for the thesis.
   - 2.2.3 LLM-based feature extraction in finance
   - 2.2.4 Temporal Fusion Transformer applications in financial time series
 
-## Chapter 3 — Methods
+## Chapter 3 - Methods
 
 **Purpose:** Describe the techniques and methodology used in the project. Each phase in Chapter 4 invokes these techniques.
 
@@ -90,7 +88,7 @@ This file is the proposal writting and structure reference for the thesis.
   - 3.7.4 Agreement metrics
   - 3.7.5 Use of the calibration outcome
 
-## Chapter 4 — Experiments
+## Chapter 4 - Experiments
 
 **Purpose:** Document the work done, what was found, and how each finding motivated the next step. There exists so far 2 phases.
 
@@ -101,7 +99,7 @@ This file is the proposal writting and structure reference for the thesis.
 - Data partition strategy: temporal holdout (last 20% as validation)
 - Reproducibility: seeds, version-locked dependencies, deterministic prompts
 
-### 4.2 Phase 1 — Initial pipeline and baseline modeling
+### 4.2 Phase 1 - Initial pipeline and baseline modeling
 
 **Phase scope:** WTI market data, GDELT scrape across the Phase 1 query set (eight queries, March 2024 to February 2026), FinBERT sentiment extraction, regex-based `body_valid` filter. The phase covers the headline bias experiment, the contemporaneous and lag OLS regressions, and the VAR specification. The phase establishes the empirical findings on RQ1 and RQ2 and exposes the limitations that motivate the Phase 2 NLP redesign and the move to deep-learning modeling.
 
@@ -121,7 +119,7 @@ This file is the proposal writting and structure reference for the thesis.
   - Result: R² < 0.001, neither bearish nor bullish significant
   - Interpretation: news does not move volume instantaneously at the moment of publication
   - This null result motivates the lag analysis
-- 4.2.4 Lag OLS — RQ1 and RQ2
+- 4.2.4 Lag OLS, first answer to RQ1 and RQ2
   - Methodology: log_volume at t+k regressed on bearish/bullish indicators at t, for k ∈ {1, 2, 3, 4, 6, 8, 12}
   - Result: peak impact at lag +6h (β ≈ 0.25, p < 0.001), consistent bearish > bullish asymmetry
   - **Figure: lag_coefficients.png**
@@ -141,7 +139,7 @@ This file is the proposal writting and structure reference for the thesis.
     - Phase 1 dataset confined to pre-war coverage window
     - Models lack macro covariates (DXY, VIX)
 
-### 4.3 Phase 2 — Refined pipeline and improved modeling
+### 4.3 Phase 2 - Refined pipeline and improved modeling
 
 **Phase scope:** Migration from FinBERT to Claude Haiku for richer structured feature extraction, addition of DXY and VIX as macro covariates, and the introduction of the Temporal Fusion Transformer as the primary deep-learning model. The phase opens with the Haiku v1 schema and the first TFT training (TFT v1), then iterates: inter-model calibration exposes a weakness in the composite sentiment score, the schema is decomposed into orthogonal economic channels (Haiku v2), the news corpus is extended through May 2026, and TFT v2 is trained on the refined feature set. The phase ends with a direct comparison of TFT v1 and v2 and a robustness check on the filter migration.
 
@@ -209,7 +207,7 @@ This file is the proposal writting and structure reference for the thesis.
 - 4.4.1 Filter comparison (body_valid vs usable, with the κ analysis from 4.3.3)
 - 4.4.2 Optional: alignment robustness (lag analysis re-run with floor alignment instead of ceiling, to verify the lag +6h finding is not an artifact of the alignment rule)
 
-## Chapter 5 — Discussion
+## Chapter 5 - Discussion
 
 **Purpose:** Interpret the findings, contextualize them in the literature, identify limitations.
 
@@ -234,7 +232,7 @@ This file is the proposal writting and structure reference for the thesis.
   - Robustness across commodities (gold, copper, gas)
   - Extending the entity vocabulary with domain-aware embeddings
 
-## Chapter 6 — Conclusion
+## Chapter 6 - Conclusion
 
 **Purpose:** Wrap up. Restate the contributions, summarize the findings, point to future work.
 

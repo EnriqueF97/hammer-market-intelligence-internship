@@ -1,4 +1,4 @@
-# 3 - Methods
+# Chapter 3 — Methods
 
 ## 3.1 Data sources and acquisition
 
