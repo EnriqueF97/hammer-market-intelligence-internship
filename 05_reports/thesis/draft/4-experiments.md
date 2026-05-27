@@ -145,9 +145,9 @@ Lag order was selected using the `select_order` method of `statsmodels`' VAR cla
 
 **Result.** Figure 4.3 shows the impulse response function. The point estimate is small and negative across nearly the entire horizon, with values fluctuating in a narrow band around -0.02 in `log_volume` units. The 95% confidence interval is wide at every horizon, including zero at virtually every lag.
 
-**Figure 4.3: Impulse response of log_volume to a one-unit positive shock to sentiment_score, with 95% bootstrap confidence intervals.** The point estimate is small and slightly negative across the 24-hour horizon, with the confidence band spanning zero throughout. The wide intervals reflect the limited identification provided by the sparse sentiment series.
+![IRF Sentiment to Volume](../../../04_outputs/figures/irf_sentiment_to_volume.png)
 
-_(figure: ../../04_outputs/figures/irf_sentiment_to_volume.png)_
+**Figure 4.3: Impulse response of log_volume to a one-unit positive shock to sentiment_score, with 95% bootstrap confidence intervals.** The point estimate is small and slightly negative across the 24-hour horizon, with the confidence band spanning zero throughout. The wide intervals reflect the limited identification provided by the sparse sentiment series.
 
 **Comparison to the OLS finding.** The IRF result is inconsistent with the lag OLS finding in two ways. First, the sign of the point estimate is opposite: the lag OLS finds a _positive_ association between sentiment events and subsequent volume, while the IRF point estimate is slightly negative. Second, the OLS finding is statistically significant at lag +6h with p < 0.001 for both bearish and bullish dummies, while the IRF confidence band includes zero at every horizon.
 
