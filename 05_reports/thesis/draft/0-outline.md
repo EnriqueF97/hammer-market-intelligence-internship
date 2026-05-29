@@ -167,7 +167,7 @@ This file is the proposal writting and structure reference for the thesis.
 - 4.3.5 Temporal Fusion Transformer v1
   - First TFT training, on the Phase 1 corpus with Haiku v1 features and macro covariates
   - Architecture and training setup (Section 3.6)
-  - Results: val_loss 0.210, attention peak at −4h (consistent with lag OLS +6h), sentiment_score at 53% feature importance
+  - Results: val_loss 0.204, attention peak at −4h (consistent with lag OLS +6h), sentiment_score at 53% feature importance
   - "Daily memory" effect at -27/-28h in attention
   - Limitations:
     - Directional asymmetry test underpowered (p=0.56)

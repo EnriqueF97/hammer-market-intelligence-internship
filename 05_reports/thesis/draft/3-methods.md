@@ -301,7 +301,7 @@ Training is performed in PyTorch Lightning [N] via the `pytorch-forecasting` lib
 - Early stopping on validation loss with a minimum improvement of `1e-4` and a patience of 5 epochs
 - A maximum of 30 epochs (early stopping typically halts training earlier)
 - Gradient clipping at 0.1 to stabilize updates with the small batch sizes characteristic of long-sequence forecasting.
-- The Apple Silicon MPS accelerator for TFT v1 and an equivalent accelerator setup for TFT v2 (Section 4.3.7)
+- A Google Colab T4 GPU for TFT v1 training and an equivalent accelerator setup for TFT v2 (Section 4.3.7)
 
 The dataset is split temporally, with the most recent 20% of hours used as the validation set and the earlier 80% used for training. Within the training set, fixed-length sliding-window samples are constructed by the `pytorch-forecasting` `TimeSeriesDataSet` wrapper, which handles the consistent encoding of categorical features, the construction of input tensors, and the application of group normalization to the target series. The validation set uses the same wrapper with `stop_randomization=True` to ensure deterministic evaluation.
 
