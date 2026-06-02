@@ -751,3 +751,29 @@ Original EV/off-topic contamination hypothesis was not confirmed by this dump �
 - 7,944 articles with `usable=0` (unchanged; `usable_strict` also 0)
 
 **Next:** Task 4 — Lock train/val/test indices.
+
+## TFT v2 Prep — Task 4: Lock train/val/test indices (2026-06-02)
+
+### Approach
+
+Temporal 70/15/15 split with 48h encoder buffer between splits to prevent encoder-window leakage across boundaries.
+
+### Verified date ranges
+
+- Train: 2024-05-13 11:00 UTC → 2025-10-07 09:00 UTC (7,862 hours, ~17 months)
+- Val: 2025-10-09 12:00 UTC → 2026-01-27 18:00 UTC (1,637 hours, ~3.7 months)
+- Test: 2026-01-29 21:00 UTC → 2026-05-13 11:00 UTC (1,637 hours, ~3.5 months)
+
+### Regime context
+
+- June 21, 2025: US strike on Iranian nuclear facilities (in TRAIN set)
+- Feb 28, 2026: US/Israel attack on Iran, war onset (in TEST set, first post-onset hour at row idx 10056 = 2026-03-01 23:00 UTC)
+
+Test set spans the regime change: first ~430 hours pre-war, remaining ~1,200 hours during the war. Test metrics to be reported on both slices separately to evaluate cross-regime generalization. This is an emergent property of the temporal split, not a designed contrast.
+
+### Final state
+
+- Constants saved to `03_src/tft/config.py`
+- All Task 5 ablation variants will import from this single source
+
+**Next:** Task 5 — Scaffold TFT v2 training notebook `02_notebooks/13_tft_v2_training.ipynb`.
