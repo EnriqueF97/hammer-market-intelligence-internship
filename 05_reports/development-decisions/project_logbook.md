@@ -777,3 +777,65 @@ Test set spans the regime change: first ~430 hours pre-war, remaining ~1,200 hou
 - All Task 5 ablation variants will import from this single source
 
 **Next:** Task 5 — Scaffold TFT v2 training notebook `02_notebooks/13_tft_v2_training.ipynb`.
+
+## TFTv2 Training process
+
+### TFT model parameter comparison
+
+| Model    |    Parameters | Notes                                                                                                                                                                         |
+| -------- | ------------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TFT v1   |       112,685 | FinBERT-mapped sentiment + magnitude + int-encoded categoricals + DXY/VIX. Architecture: hidden_size=32, attention_head_size=4, dropout=0.1, hidden_continuous_size=16.       |
+| TFT v2.0 |       118,114 | Same architecture as v1. Adds three channel features (supply_impact, demand_impact, risk_premium). +5,429 params from extended VSN feature list.                              |
+| TFT v2.1 | TBD after run | Same as v2.0 but proper categorical encoding for event_type and time_horizon (replaces int-encoded reals). Small embedding tables add ~few hundred params.                    |
+| TFT v2.2 | TBD after run | Same as v2.1 plus 71 entity flag columns, multi-target output heads (3 targets), multi-horizon decoder (max prediction length 28). Substantially larger; expected ~200k-300k. |
+
+Parameter counts confirm architectural constancy across the v1 → v2.0 → v2.1 transition: identical hidden_size, attention_head_size, dropout, and hidden_continuous_size. The v1-vs-v2.0 difference (~5%) is attributable entirely to the three new channel features entering the Variable Selection Network. The v2.2 expansion reflects the entity-flag features and the multi-target/multi-horizon output configuration.
+
+## TFT v2.0 — first ablation run results (2026-06-02)
+
+### Training
+
+- Best checkpoint: `tft_v2.0-epoch=19-val_loss=0.2941.ckpt`
+- Best val_loss: 0.2941 at epoch 19
+- Early-stopped at epoch 25 (max_epochs=50, patience=5)
+- Compute: Colab T4 GPU
+- Trainable parameters: 118,114
+- Architecture: identical to TFT v1 (hidden_size=32, attention_head_size=4, dropout=0.1, hidden_continuous_size=16)
+
+### Test set metrics (held-out, 1,637 hours, Jan 29 – May 13, 2026)
+
+| Slice                            |     N |   MAE |  RMSE |
+| -------------------------------- | ----: | ----: | ----: |
+| Val                              | 1,637 | 0.466 | 1.035 |
+| Test full                        | 1,637 | 0.397 | 0.696 |
+| Test pre-war (before 2026-02-28) |   461 | 0.372 | 0.621 |
+| Test war (from 2026-02-28)       | 1,176 | 0.406 | 0.723 |
+
+### Persistence baseline (predict log_volume(t+1) = log_volume(t))
+
+| Slice        | Persistence MAE | TFT v2.0 MAE | Reduction |
+| ------------ | --------------: | -----------: | --------: |
+| Val          |           1.171 |        0.466 |       60% |
+| Test full    |           1.071 |        0.397 |       63% |
+| Test pre-war |           1.072 |        0.372 |       65% |
+| Test war     |           1.071 |        0.406 |       62% |
+
+### Observations
+
+- TFT v2.0 substantially beats persistence on every slice. 60-65% MAE reduction confirms the model is learning real signal from input features, not just memorizing autocorrelation.
+- War-slice MAE is ~9% worse than pre-war-slice MAE (0.406 vs 0.372), but only ~5% worse than full test MAE. The model generalizes reasonably across the regime change.
+- Val MAE (0.466) is worse than test MAE (0.397) despite identical sample size. Attributed to val period (Oct 2025 – Jan 2026) having higher persistence baseline MAE (1.171 vs test's 1.071), i.e., genuinely higher volume variability that's harder to predict.
+- Direct comparison of v2.0's val_loss (0.294) to TFT v1's val_loss (0.204) is not apples-to-apples because v1's val set covers a different period (Phase 1 corpus, 80/20 split). The persistence-baseline comparison is the more meaningful sanity check on v2.0's behavior.
+
+### Pending for v2.0 (Cells 14-17)
+
+- Feature importance ranking (does sentiment_score still dominate or do channels carry weight?)
+- Attention weight peak lag (does v1's -4h peak reproduce?)
+- Directional asymmetry: bearish vs bullish predicted volume t-test
+- Save artifacts to `04_outputs/tft_v2/v2.0/`
+
+### Next
+
+- Complete v2.0 evaluation (Cells 14-17)
+- Run v2.1 ablation (proper categoricals)
+- Run v2.2 ablation (entities + multi-horizon + multi-target)
