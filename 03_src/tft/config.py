@@ -24,6 +24,55 @@ WAR_ONSET_IDX = 10056
 WAR_ONSET_DATETIME = "2026-03-01 23:00:00+00:00"
 
 
+def entity_to_column_name(canonical: str) -> str:
+    """Canonical entity name → valid pandas column name with ent_ prefix.
+
+    Uses unicode normalization so accented characters degrade gracefully
+    (e.g. 'Türkiye' → 'ent_turkiye').  Inverse mapping is in COL_TO_ENTITY.
+    """
+    import re
+    import unicodedata
+
+    name = unicodedata.normalize("NFKD", canonical)
+    name = name.encode("ascii", "ignore").decode("ascii")
+    name = name.lower()
+    name = name.replace(" ", "_")
+    name = name.replace("+", "_plus")
+    name = name.replace("&", "_and_")
+    name = name.replace(".", "")
+    name = name.replace("-", "_")
+    name = re.sub(r"[^a-z0-9_]", "_", name)
+    name = re.sub(r"_+", "_", name)
+    name = name.strip("_")
+    return f"ent_{name}"
+
+
+def _build_entity_maps() -> "tuple[dict, dict]":
+    """Build canonical→column and column→canonical dicts from CANONICAL_ENTITIES."""
+    import sys
+    from pathlib import Path
+
+    _src = Path(__file__).parent.parent
+    if str(_src) not in sys.path:
+        sys.path.insert(0, str(_src))
+    from nlp.llm_features import CANONICAL_ENTITIES  # type: ignore
+
+    fwd = {e: entity_to_column_name(e) for e in CANONICAL_ENTITIES}
+    rev = {v: k for k, v in fwd.items()}
+    return fwd, rev
+
+
+# Canonical entity name → column name  (e.g. 'Türkiye' → 'ent_turkiye')
+ENTITY_COL_MAP: "dict[str, str]" = {}
+# Column name → canonical entity name  (reverse of above, for reporting)
+COL_TO_ENTITY: "dict[str, str]" = {}
+
+try:
+    ENTITY_COL_MAP, COL_TO_ENTITY = _build_entity_maps()
+except Exception:
+    pass  # maps stay empty if llm_features is unavailable (e.g. bare import)
+
+
 def verify_against_db(db_path: str = "01_data/wti_thesis.db") -> None:
     """Sanity check: confirm TOTAL_HOURS matches the current DB state.
 
