@@ -1,6 +1,6 @@
 # Thesis Outline
 
-**Title (proposal):** Modeling News-Driven Liquidity Dynamics and Information Propagation in Commodities Markets
+**Title:** News-Driven Liquidity Dynamics in WTI Crude Oil Futures: A Channel-Decomposition Approach
 
 **Author:** Enrique Favila\
 **Supervisor:** Dr. Lejla Batina\
@@ -9,7 +9,7 @@
 
 ## Purpose of this document
 
-This file is the proposal writting and structure reference for the thesis.
+Structural reference for the thesis. The work investigates how news propagates into WTI crude oil futures liquidity at hourly resolution, using a channel decomposition of LLM-extracted news features (supply, demand, risk premium) to characterize the lag structure (RQ1) and the bearish/bullish asymmetry (RQ2) of the liquidity response.
 
 ## Chapter 1 - Introduction
 
@@ -24,7 +24,6 @@ This file is the proposal writting and structure reference for the thesis.
 - 1.3 Research questions
   - **RQ1**: lag structure of news impact on liquidity
   - **RQ2**: bearish vs bullish asymmetry in liquidity response
-  - **RQ3** (still in progress, contemplating to discard): cross-commodity spillovers
 - 1.4 Contributions
   - (a) Empirical lag-and-asymmetry finding for WTI at hourly resolution, with peak news impact at lag +6h and a consistent bearish > bullish asymmetry. Supported by lag OLS results (4.2.4) and confirmed by TFT v2 attention patterns (4.3.7).
   - (b) Methodological contribution: a decomposition of LLM-extracted news features into orthogonal economic channels (supply, demand, risk premium), validated by inter-model calibration. The decomposition improves cross-model agreement on news sentiment by roughly 50 percentage points relative to a single composite score. Supported by 4.3.2–4.3.5.
@@ -227,7 +226,7 @@ This file is the proposal writting and structure reference for the thesis.
   - 24-month dataset with regime change (Iran war) introduces non-stationarity
   - Single-commodity scope; results may not generalize to other commodities or asset classes
 - 5.5 Future work
-  - RQ3 cross-commodity spillovers (deferred from this thesis)
+  - Cross-commodity spillovers (out of scope for this thesis)
   - Larger calibration with human raters at small scale
   - Robustness across commodities (gold, copper, gas)
   - Extending the entity vocabulary with domain-aware embeddings

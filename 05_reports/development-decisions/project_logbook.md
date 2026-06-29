@@ -969,3 +969,7 @@ The +3h pre-war bearish > bullish finding matches the direction of Phase 1's lag
 ### Decision
 
 This configuration is designated as TFT v2 for the thesis writeup (§4.3.7). The ablation across v2.0, v2.1, v2.2 (without strict filter) and the patience/dropout exploration are documented in the v2 training runs tracking document (`05_reports/v2_training_runs.md`); the ablation table appears in Appendix [X].
+
+# TODO
+
+Maybe use dropout on training, different architecture, more data?
